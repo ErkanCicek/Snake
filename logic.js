@@ -1,3 +1,5 @@
+let scoreDisplay = document.getElementById("points-data")
+
 var snake = [{x: 300, y: 300},{x: 350, y: 300},{x: 400, y: 300}]
 var apple = {x: 0, y: 0}
 
@@ -7,6 +9,8 @@ var yVel = 0
 var points = 0
 
 var lastPressedKey
+
+let isAlive = true
 
 var canvas = document.getElementById("canvas")
 var ctx = canvas.getContext("2d")
@@ -21,20 +25,22 @@ function draw() {
     drawApple()
 }
 
-function update() {
-    eatApple()
-    selfCollisionDetection()
-    wallCollisionDetection()
-    snakeMovement()
+function update(isAlive) {
+    if (isAlive) {
+        eatApple()
+        selfCollisionDetection()
+        wallCollisionDetection()
+        snakeMovement()
+    }
 }
 
 function render(){
-    update()
+    update(isAlive)
     draw()
 }
 
 function gameLoop(){
-    setInterval(render, 1000/14)
+    setInterval(render, 1000/7)
 }
 
 //start
@@ -110,6 +116,8 @@ function wallCollisionDetection(){
 function leftWallDetection(){
     if(snake[0].x == -50){
         xVel = 0
+        isAlive = false
+        alert("you died")
         window.location.reload()
     }
 }
@@ -117,6 +125,8 @@ function leftWallDetection(){
 function rightWallDetection(){
     if(snake[0].x == 700){
         xVel = 0
+        isAlive = false
+        alert("you died")
         window.location.reload()
     }
 }
@@ -124,6 +134,8 @@ function rightWallDetection(){
 function topWallDetection(){
     if(snake[0].y == -50){
         yVel = 0
+        isAlive = false
+        alert("you died")
         window.location.reload()
     }
 }
@@ -131,6 +143,8 @@ function topWallDetection(){
 function bottomWallDetection(){
     if (snake[0].y == 700) {
         yVel = 0
+        isAlive = false
+        alert("you died")
         window.location.reload()
     }
 }
@@ -145,8 +159,8 @@ function snakeMovement(){
 }
 
 function generateApple(){
-    var x, y
-
+    let x = 0
+    let y = 0
     while(true){
         x = Math.floor(Math.random() * 14)
         y = Math.floor(Math.random() * 14)
@@ -179,6 +193,7 @@ function eatApple(){
         points++
         growSnake()
         generateApple()
+        scoreDisplay.innerHTML = points
     }
 }
 
@@ -190,11 +205,10 @@ function selfCollisionDetection(){
     if(points > 1){
         for(var i = 1; i < snake.length; i++){
             if(snake[0].x == snake[i].x && snake[0].y == snake[i].y){
+                isAlive = false
+                alert("you died")
                 window.location.reload()
             }
         }
     }
 }
-
-
-export {points}
